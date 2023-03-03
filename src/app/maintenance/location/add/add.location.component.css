@@ -1,0 +1,20 @@
+.container {
+  width: 56%;
+  position: absolute;
+  z-index: 2;
+  background: white;
+  left: 22%;
+  border-radius:  0 0 5px 5px;
+  padding: 10px;
+  box-shadow: 0 5px 5px -3px rgba(0,0,0,.2), 0 8px 10px 1px rgba(0,0,0,.14), 0 3px 14px 2px rgba(0,0,0,.12);
+}
+
+button {
+  /*margin-left: 5px;*/
+  float: right;
+}
+
+.mat-form-field {
+  font-size: 13px;
+  margin: 0 8px;
+}

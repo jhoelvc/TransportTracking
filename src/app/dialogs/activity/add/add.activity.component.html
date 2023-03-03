@@ -1,0 +1,106 @@
+<div class="container">
+  <h4 mat-dialog-title>Agregar actividad</h4>
+
+  <form class="mat-dialog-content" #formControl="ngForm" style="overflow-y: auto;">
+    <div class="form">
+      <mat-form-field appearance="outline" color="primary" style="padding-right: 5px;">
+        <mat-label>Fecha</mat-label>
+        <input matInput [matDatepicker]="picker" [min]="minDate" [(ngModel)]="data.scheduledDate" name="scheduledDate" placeholder="Ingrese fecha">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" color="primary" style="width: 60px; padding-right: 5px;">
+        <mat-label>Hora</mat-label>
+        <input matInput #input type="time" [(ngModel)]="data.hour" name="hour" required>
+      </mat-form-field>
+
+      <section class="example-section" style="display: flex;justify-content: center;align-items: center;">
+        <mat-checkbox class="example-margin" [(ngModel)]="transfer" name="transfer">Transfer</mat-checkbox>
+      </section>
+    </div>
+
+    <div class="form">
+      <mat-form-field appearance="outline" color="primary">
+        <mat-label>Servicio</mat-label>
+        <mat-select placeholder="Servicio" [disabled]="data.activity" [(ngModel)]="data.serviceCode" name="service" required>
+          <mat-option *ngFor="let service of services" [value]="service.code">
+            {{service.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form">
+      <mat-form-field appearance="outline" color="primary">
+        <mat-label>Agencia</mat-label>
+        <mat-select placeholder="Agencia" [disabled]="data.activity" [(ngModel)]="data.customerCode" name="customerCode" required>
+          <mat-option *ngFor="let customer of customers" [value]="customer.code">
+            {{customer.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form">
+      <mat-form-field appearance="outline" color="primary" style="padding-right: 5px;">
+        <mat-label>Tipo Ubicacion (opcional)</mat-label>
+        <mat-select placeholder="Seleccione tipo de Ubicacion" [(ngModel)]="data.locationLocationTypeCode" name="locationLocationTypeCode" (selectionChange)="filterLocations(data.locationLocationTypeCode)">
+          <mat-option *ngFor="let locationType of locationTypes" [value]="locationType.code">
+            {{locationType.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" color="primary">
+        <mat-label>Ubicacion (opcional)</mat-label>
+        <mat-select placeholder="Seleccione Ubicacion" [(ngModel)]="data.locationCode" name="locationCode">
+          <mat-option *ngFor="let location of locationFiltered" [value]="location.code">
+            {{location.address}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form">
+      <mat-form-field appearance="outline" style="width: 100%">
+        <mat-label>Ruta</mat-label>
+        <input matInput placeholder="Ruta" aria-label="RouteProfile" [(ngModel)]="data.routeName" [matAutocomplete]="auto" [formControl]="routeCtrl" name="routeProfile">
+        <mat-autocomplete #auto="matAutocomplete">
+          <mat-option *ngFor="let route of filteredRoute | async" [value]="route.name" (onSelectionChange)="select($event, route, 1)">
+            {{route.name}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+    <div class="form">
+      <mat-form-field appearance="outline" color="primary">
+        <mat-label>Nombre de pax</mat-label>
+        <input matInput #input placeholder="Nombre" [(ngModel)]="data.passengerName" name="passengerName" 
+        onkeypress="return String.fromCharCode(event.charCode).match(/[^a-zA-Z\s]/g) === null" required>
+        <button mat-button *ngIf="data.passengerName" matSuffix mat-icon-button aria-label="Clear" (click)="data.passengerName=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" color="primary" style="width: 20px; padding-left: 5px;">
+        <mat-label>N° de pax</mat-label>
+        <input matInput #input type="number" [(ngModel)]="data.passengersNumber" name="passengerNumber" required>
+      </mat-form-field>
+    </div>
+
+    <div class="form">
+      <mat-form-field appearance="outline">
+        <mat-label>Descripcion</mat-label>
+        <textarea matInput placeholder="Descripcion" [(ngModel)]="data.remark" name="remark"></textarea>
+      </mat-form-field>
+    </div>
+  </form>
+
+  <div mat-dialog-actions>
+    <button mat-raised-button (click)="onNoClick(-1)">Cancelar</button>
+    <button mat-raised-button color="primary" [disabled]="!formControl.valid" (click)="confirmAdd()">Guardar</button>
+    <button mat-raised-button color="primary" *ngIf="!data.activity" [disabled]="!formControl.valid" (click)="addNext()">Guardar y Continuar</button>
+  </div>
+</div>

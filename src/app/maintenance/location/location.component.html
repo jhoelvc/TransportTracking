@@ -1,0 +1,103 @@
+<div class="location-side" style="height: 100%; overflow: hidden;">
+  <div style="position: sticky; z-index: 10;">
+    <h3 class="mat-h3">Ubicaciones</h3>
+    <mat-form-field appearance="standard" style="width: 95%;">
+      <mat-label>Busqueda Rapida</mat-label>
+      <input matInput placeholder="Busqueda" [disabled]="locationEdit" (keyup)="applyFilter($event.target.value)">
+      <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+  
+    <section class="example-section">
+      <mat-checkbox class="example-margin" style="font-size: 13px;" [disabled]="locationEdit" [(ngModel)]="checked" (change)="setTypeLocationFilter($event)"></mat-checkbox>
+      <mat-form-field style="width: 80%;">
+        <mat-label>Tipo de Ubicacion</mat-label>
+        <mat-select [disabled]="!checked" [(value)]="locationType.code" (selectionChange)="select($event.value)">
+          <mat-option *ngFor="let locationType of locationTypes" [value]="locationType.code">
+            {{locationType.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </section>
+  </div>
+  
+  <div class="container" [style.height]="routeProfileEdit ? '45%' : null">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    
+      <!-- Code Column -->
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let element; let row;">
+          <div *ngIf="routeProfileEdit && row.editing">
+            <mat-form-field color="primary" style="width: 30px; font-size: 11px; padding: 0px;">
+              <input matInput #input type="number" min="0" [(value)]="order" name="route" required>
+            </mat-form-field>
+          </div>
+        </td>
+      </ng-container>
+    
+      <!-- LocationTypeCode Column -->
+      <ng-container matColumnDef="locationTypeCode">
+        <th mat-header-cell *matHeaderCellDef> Tipo </th>
+        <td mat-cell *matCellDef="let element"> {{element.locationTypeCode}} </td>
+      </ng-container>
+    
+      <!-- address Column -->
+      <ng-container matColumnDef="address">
+        <th mat-header-cell *matHeaderCellDef> Nombre </th>
+        <td mat-cell *matCellDef="let element"> {{element.address}} </td>
+      </ng-container>
+    
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actionsColumn">
+        <th mat-header-cell *matHeaderCellDef style="padding-right: 10px; text-align: right;">
+          <button mat-icon-button color="accent" matTooltip="Nuevo" aria-label="Add Location" (click)="addNew()" [disabled]="locationEdit || routeProfileEdit">
+            <i class="material-icons">add_circle</i>
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let element; let row" style="text-align: right;">
+          <button mat-icon-button color="primary" matTooltip="Modificar" (click)="edit(element)" *ngIf="!(locationEdit || routeProfileEdit)">
+            <i class="material-icons md-18">edit</i>
+          </button>
+          <button mat-icon-button color="warn" matTooltip="Eliminar" (click)="delete(element)" *ngIf="!(locationEdit || routeProfileEdit)">
+            <i class="material-icons md-18">delete</i>
+          </button>
+          
+          <button mat-icon-button color="primary" matTooltip="Agregar" (click)="element.code > 0 ? element.code = element.code * -1 : element.code = element.code; setLocation(element); row.editing=true;" 
+          *ngIf="routeProfileEdit && !row.editing && !row.routeRef" style="transform: rotate(180deg);">
+            <i class="material-icons md-18">input</i>
+          </button>
+          
+        </td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" style="height: 30px;"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" style="height: 30px;"></tr>
+    </table>
+  
+    <div *ngIf="isLoading" style="display: flex; justify-content: center; align-items: center; padding: 30px 0;">
+      <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
+    </div>
+    
+    <mat-paginator [length]="recordsFound"  [pageSize]="pageSize" [disabled]="locationEdit" (page)="paginator($event)"
+    [style.position]="routeProfileEdit ? 'sticky' : 'fixed'" [style.left]="routeProfileEdit ? '0' : '85%'"></mat-paginator>
+  </div>
+  
+  <div class="location-order" *ngIf="rpLocations.length == 0 && routeProfileEdit; else elseBlock">
+    Agrege localizaciones
+  </div>
+  <ng-template #elseBlock>
+    <div class="order-content" style="overflow: auto;">
+      <h3 class="mat-h3" style="text-align: center; position: sticky; z-index: 10;" [style.display]="routeProfileEdit ? 'block' : 'none'">Ordenar Ubicaciones</h3>
+      <div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)" [style.display]="routeProfileEdit ? 'block' : 'none'">
+        <div class="example-box" *ngFor="let location of rpLocations; let i = index" cdkDrag>
+          {{i + 1}}. {{location.address}} 
+          <div *ngIf="routeProfileEdit">
+            <button mat-icon-button color="warn" matTooltip="Quitar" (click)="location.code > 0 ? location.code = location.code * -1 : location.code = location.code; removeLocation(location);" *ngIf="routeProfileEdit">
+              <i class="material-icons md-18">input</i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>  
+</div>

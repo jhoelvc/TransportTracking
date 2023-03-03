@@ -1,0 +1,41 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+//$app-Transport-primary: mat-palette($mat-indigo);
+//$app-Transport-accent: mat-palette($mat-pink, A200, A100, A400);  
+//$app-Transport-warn: mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+//$app-Transport-theme: mat-light-theme($app-Transport-primary, $app-Transport-accent, $app-Transport-warn);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+//@include angular-material-theme($app-Transport-theme);
+
+/******************************************************************************************************************/
+
+$app-Transport-primary: mat-palette($mat-light-blue, 900);
+$app-Transport-accent: mat-palette($mat-pink, A700);
+$app-Transport-warn: mat-palette($mat-red);
+
+$app-Transport-theme: mat-light-theme($app-Transport-primary, $app-Transport-accent, $app-Transport-warn);
+
+@include angular-material-theme($app-Transport-theme);
+
+.toolbar-theme {
+  $app-Transport-primary: mat-palette($mat-light-blue, 900);
+  $app-Transport-accent: mat-palette($mat-pink, A200, A100, A400);
+  $app-Transport-warn: mat-palette($mat-red, 300);
+
+  $app-Transport-theme: mat-light-theme($app-Transport-primary, $app-Transport-accent, $app-Transport-warn);
+
+  @include angular-material-theme($app-Transport-theme);
+}
+

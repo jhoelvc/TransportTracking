@@ -1,0 +1,28 @@
+.example-card {
+	max-width: 400px;
+}
+
+.example-full-width {
+	width: 100%;
+}
+
+.container  {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 30%;
+	height: 50%;
+	margin: auto;
+}
+
+.error {
+	color: red;
+	font-size: 13px;
+}
+
+.mat-card-actions {
+	margin: 0;
+	padding: 8px 0;
+}

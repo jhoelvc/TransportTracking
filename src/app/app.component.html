@@ -1,0 +1,48 @@
+<div class="toolbar-theme">
+	<mat-toolbar *ngIf="!hideElement" color="primary">
+		<mat-toolbar-row>
+			<button mat-button routerLink="/" [color]="route == '/' ? 'warn' : ''"><mat-icon class="example-tab-icon">map</mat-icon>Mapa</button>
+			<button mat-button routerLink="/activity" [color]="route == '/activity' ? 'warn' : ''"><mat-icon class="example-tab-icon">folder_open</mat-icon>Actividades</button>
+			<button mat-button routerLink="/routeProfileLocation" [color]="route == '/routeProfileLocation' ? 'warn' : ''"><mat-icon class="example-tab-icon">timeline</mat-icon>Rutas</button>
+			<button mat-button [matMenuTriggerFor]="maintenance" [color]="route == '/provider' || route == '/userRole' || route == '/user' || route == '/customer'
+			|| route == '/activityState' || route == '/serviceType' || route == '/locationType' || route == '/cancellationReason' || route == '/service' ? 'warn' : ''">
+				<mat-icon class="example-tab-icon">tune</mat-icon>Mantenimiento
+			</button>
+			<mat-menu #maintenance="matMenu">
+				<button *ngIf="getUserRole() < 3" mat-menu-item routerLink="/provider">Proveedores</button>
+				<button *ngIf="getUserRole() < 3" mat-menu-item routerLink="/userRole">Roles de Usuario</button>
+				<button *ngIf="getUserRole() < 3" mat-menu-item routerLink="/user">Usuarios</button>
+				<button mat-menu-item routerLink="/customer">Agencias</button>
+				<button *ngIf="getUserRole() < 3" mat-menu-item routerLink="/activityState">Estado de Actividad</button>
+				<button *ngIf="getUserRole() < 3" mat-menu-item routerLink="/serviceType">Tipo de Servicio</button>
+				<button *ngIf="getUserRole() < 3" mat-menu-item routerLink="/locationType">Tipo de Ubicacion</button>
+				<button mat-menu-item routerLink="/cancellationReason">Razon de Cancelacion</button>
+				<button mat-menu-item routerLink="/service">Servicios</button>
+			</mat-menu>
+			<span class="example-spacer"></span>
+			<button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+				<mat-icon>more_vert</mat-icon>
+			</button>
+			<mat-menu #menu="matMenu">
+				<mat-list>
+					<mat-list-item>
+						<mat-icon mat-list-icon>account_circle</mat-icon>
+						<h4 mat-line><strong>Alias:</strong> {{jwtDecoded.auth.alias}}</h4>
+						<p mat-line>{{jwtDecoded.auth.name}}</p>
+					</mat-list-item>
+				</mat-list>
+				<mat-divider></mat-divider>
+				<button mat-menu-item (click) = "changePassword()">
+					<mat-icon>vpn_key</mat-icon>
+					<span>Cambio de contraseña</span>
+				</button>
+				<button mat-menu-item (click) = "onLogout()">
+					<mat-icon>exit_to_app</mat-icon>
+					<span>Cerrar sesion</span>
+				</button>
+			</mat-menu>
+		</mat-toolbar-row>
+	</mat-toolbar>
+</div>
+
+<router-outlet></router-outlet>

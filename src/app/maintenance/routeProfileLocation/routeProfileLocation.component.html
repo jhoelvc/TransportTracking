@@ -1,0 +1,23 @@
+<mat-sidenav-container class="example-container">
+  <mat-sidenav opened disableClose  mode="side" style="width: 15%;">
+    <app-routeProfile [routeProfileEdit]="routeProfileEdit" [locationEdit]="locationEdit" (routeProfileEvent)="receiveMessage(1, $event)"></app-routeProfile>
+  </mat-sidenav>
+  <mat-sidenav opened disableClose mode="side" position="end" style="width: 15%;">
+    <app-location [routeProfileEdit]="routeProfileEdit" [locationEdit]="locationEdit" (locationEvent)="receiveMessage(2, $event)"></app-location>
+  </mat-sidenav>
+  
+  <mat-sidenav-content style="width: 70%;">
+    <app-addrouteprofile (addRouteProfileClose)="receiveEndMessage(1, $event)" [isEditing]="routeProfileEdit"
+    [routeProfile]="routeProfile" [name]="name" [description]="description" [locations]="auxlocations"></app-addrouteprofile>
+    <app-addlocation (addLocationClose)="receiveEndMessage(2, $event)" [isEditing]="locationEdit"
+    [locationTypeCode] = "locationTypeCode" [code]="locationCode" [lo]="longitude" [la]="latitude" [address]="address"></app-addlocation>
+
+    <div id="map" class="map"></div>
+    <div style="display: none;">
+      <div id="popup" class="ol-popup">
+        <h3 class="mat-h3">Arrastre el marcador a la ubicacion que desee</h3>
+      </div>
+    </div>
+    
+  </mat-sidenav-content>
+</mat-sidenav-container>

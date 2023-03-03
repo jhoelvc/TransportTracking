@@ -1,0 +1,34 @@
+<div class="container" [@childAnimation]="isEditing ? 'open' : 'closed'">
+  <form class="mat-dialog-content" #formControl="ngForm" style="overflow-y: auto;">
+    <div [style.display]="isEditing ? 'block' : 'none'">
+      <mat-form-field appearance="outline">
+        <mat-label>Tipo de localizacion</mat-label>
+        <mat-select placeholder="Elegir tipo" [(value)]="locationTypeCode" name="locationTypeCode" [disabled]="code > 0" required>
+          <mat-option *ngFor="let locationType of locationTypes" [value]="locationType.code">
+            {{locationType.name}}
+          </mat-option>
+        </mat-select>
+        <mat-hint>
+          Lon: {{lo}}
+        </mat-hint>
+      </mat-form-field>
+    
+      <mat-form-field appearance="outline">
+        <mat-label>Direccion</mat-label>
+        <input matInput placeholder="Direccion" [(ngModel)]="address" name="address"
+        onkeypress="return String.fromCharCode(event.charCode).match(/[^a-zA-Z\s]/g) === null" required>
+        <mat-hint>
+          Lat: {{la}}
+        </mat-hint>
+      </mat-form-field>
+    
+      <button mat-icon-button color="warn" (click)="close()">
+        <i class="material-icons">close</i>
+      </button>
+    
+      <button mat-icon-button color="primary" [disabled]="!formControl.valid || lo == longitude || la == latitude" (click)="addLocation()">
+        <i class="material-icons">check</i>
+      </button>
+    </div>
+  </form>
+</div>

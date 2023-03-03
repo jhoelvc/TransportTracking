@@ -1,0 +1,49 @@
+<div class="container">
+
+  <div class="form" *ngIf="!data.activityCode">
+    <h3 class="mat-h3">Asignar transportista</h3>
+    <mat-form-field appearance="outline" color="primary" style="margin-right: 5px;">
+      <mat-label>Proveedor</mat-label>
+      <mat-select placeholder="Proveedor" [(ngModel)]="providerTransport.code" name="code" (selectionChange)="filterProvider(providerTransport.code, 1)" required>
+        <mat-option style="font-size: 13px;" *ngFor="let provider of providers" [value]="provider.code">
+          {{provider.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" color="primary">
+      <mat-label>Rol de usuario</mat-label>
+      <mat-select placeholder="Rol de usuario" [(ngModel)]="userTransport.alias" name="alias" required>
+        <mat-option style="font-size: 13px;" *ngFor="let user of usersFiltered1" [value]="user.alias">
+          {{user.alias}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="form" *ngIf="data.hasChildActivity == 1 || data.activityCode">
+    <h3 class="mat-h3">Asignar transfer</h3>
+    <mat-form-field appearance="outline" color="primary" style="margin-right: 5px;">
+      <mat-label>Proveedor</mat-label>
+      <mat-select placeholder="Proveedor" [(ngModel)]="providerTransfer.code" name="code" (selectionChange)="filterProvider(providerTransfer.code, 2)" required>
+        <mat-option style="font-size: 13px;" *ngFor="let provider of providers" [value]="provider.code">
+          {{provider.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" color="primary">
+      <mat-label>Rol de usuario</mat-label>
+      <mat-select placeholder="Rol de usuario" [(ngModel)]="userTransfer.alias" name="alias" required>
+        <mat-option style="font-size: 13px;" *ngFor="let user of usersFiltered2" [value]="user.alias">
+          {{user.alias}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-raised-button color="primary" (click)="assign()">Asignar</button>
+    <button mat-raised-button (click)="onNoClick(-1)">Cancelar</button>
+  </div>
+</div>

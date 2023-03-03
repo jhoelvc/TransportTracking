@@ -1,0 +1,90 @@
+table {
+	width: 100%;
+}
+
+.example-card {
+  /*position: absolute;*/
+  height: calc(100% - 136px);
+  box-shadow: 0 2px 1px -1px rgba(0,0,0,0);
+	padding-bottom:56px;
+	top: 0;
+	left: 0;
+	right: 0;
+}
+
+.mat-card-content {
+	max-width: 50%;
+	height: calc(100% - 52px);
+	margin: 0 auto 56px auto;
+}
+
+.example-container {
+  height: calc(100% - 75px);
+	overflow: auto;
+	border-top-style: outset;
+}
+
+.loading-shade {
+  position: absolute;
+  top: 178px;
+  left: 16px;
+  bottom: 56px;
+  right: 16px;
+  /*background: rgba(0, 0, 0, 0.15);*/
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+
+/*Toolbar*/
+.example-icon {
+	padding: 0 14px;
+}
+
+.example-spacer {
+	flex: 1 1 auto;
+}
+
+.title {
+	width: 100%;
+	text-align: center;
+}
+
+.mat-card {
+  box-shadow: 0 2px 1px -1px rgba(0,0,0,0);
+}
+
+.mat-paginator {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+
+.example-container::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+.example-container::-webkit-scrollbar:vertical {
+  width:10px;
+}
+
+.example-container::-webkit-scrollbar-button:increment,.example-container::-webkit-scrollbar-button {
+  display: none;
+} 
+
+.example-container::-webkit-scrollbar:horizontal {
+  height: 10px;
+}
+
+.example-container::-webkit-scrollbar-thumb{
+  background-color: #797979;
+  border-radius: 20px;
+  border: 2px solid #f1f2f3;
+}
+
+.example-container::-webkit-scrollbar-track {
+  border-radius: 10px;  
+}

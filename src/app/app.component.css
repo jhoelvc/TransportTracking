@@ -1,0 +1,42 @@
+table {
+	width: 100%;
+}
+
+a {
+	text-decoration: none;
+	color: white;
+}
+
+/*Toolbar*/
+.example-icon {
+	padding: 0 14px;
+}
+
+.example-spacer {
+	flex: 1 1 auto;
+}
+
+.example-tab-icon {
+	margin-right: 8px;
+}
+
+a {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 18%;
+}
+
+.center {
+	margin-top: 5%;
+	width: 200px;
+	height: 50px;
+}
+
+.span {
+	width: 100%;
+}
+
+.mat-list-base {
+	padding-top: 0;
+}

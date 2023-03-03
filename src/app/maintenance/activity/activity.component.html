@@ -1,0 +1,375 @@
+<mat-card class="example-card">
+  <mat-card-header>
+    <div class="title">
+      
+    </div>
+  </mat-card-header>
+  <mat-card-actions>
+    <mat-accordion class="example-headers-align">
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>search</mat-icon>
+              Filtros de busqueda
+          </mat-panel-title>
+          <mat-panel-description>
+            Busqueda Avanzada
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        
+        <div class="filter-content">
+          <div class="filter-card">
+            <mat-checkbox class="margin" [(ngModel)]="byDate"></mat-checkbox>
+            <label class="example-margin">De:</label>
+            <mat-form-field style="width: 100px;">
+              <input matInput [matDatepicker]="picker1" [disabled]="!byDate" placeholder="Fecha A" [(ngModel)]="filter.scheduledDateA" name="scheduledDateA">
+              <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+              <mat-datepicker #picker1></mat-datepicker>
+            </mat-form-field>
+            <label class="example-margin">a</label>
+            <mat-form-field style="width: 100px;" >
+              <input matInput [matDatepicker]="picker2" [disabled]="!byDate" placeholder="Fecha B" [(ngModel)]="filter.scheduledDateB" name="scheduledDateB">
+              <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+              <mat-datepicker #picker2></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="filter-card">
+            <mat-checkbox class="example-margin" [checked]="!customerCtrl.disabled" (change)="customerCtrl.disabled ? customerCtrl.enable() : customerCtrl.disable()"></mat-checkbox>
+            <mat-form-field style="width: 100%">
+              <input matInput placeholder="Por agencia" aria-label="Customer" [matAutocomplete]="auto1" [formControl]="customerCtrl" name="agency">
+              <mat-autocomplete #auto1="matAutocomplete">
+                <mat-option *ngFor="let customer of filteredCustomer | async" [value]="customer.name" (onSelectionChange)="select($event, customer, 1)">
+                  <span style="width: 100%; display: block;">{{customer.name}}</span>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
+          <div class="filter-card">
+            <mat-checkbox class="example-margin" [checked]="!serviceCtrl.disabled" (change)="serviceCtrl.disabled ? serviceCtrl.enable() : serviceCtrl.disable()"></mat-checkbox>
+            <mat-form-field style="width: 100%">
+              <input matInput placeholder="Por Servicio" aria-label="Service" [matAutocomplete]="auto2" [formControl]="serviceCtrl" name="service">
+              <mat-autocomplete #auto2="matAutocomplete">
+                <mat-option *ngFor="let service of filteredService | async" [value]="service.name" (onSelectionChange)="select($event, service, 2)">
+                  <span style="width: 100%; display: block;">{{service.name}}</span>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
+          <div class="filter-card">
+            <mat-checkbox class="example-margin" [checked]="!locationTypeCtrl.disabled" (change)="locationTypeCtrl.disabled ? locationTypeCtrl.enable() : locationTypeCtrl.disable()"></mat-checkbox>
+            <mat-form-field>
+              <mat-label>Por tipo de ubicacion</mat-label>
+              <mat-select [formControl]="locationTypeCtrl" [(value)]="locationType.code" (selectionChange)="select($event, locationType.code, 4)">
+                <mat-option *ngFor="let locationType of locationTypes" [value]="locationType.code">
+                  {{locationType.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="filter-card">
+            <mat-checkbox class="example-margin" [checked]="!locationCtrl.disabled" (change)="locationCtrl.disabled ? locationCtrl.enable() : locationCtrl.disable()"></mat-checkbox>
+            <mat-form-field style="width: 100%">
+              <input matInput placeholder="Por ubicacion" aria-label="Location" [matAutocomplete]="auto3" [formControl]="locationCtrl" name="location">
+              <mat-autocomplete #auto3="matAutocomplete">
+                <mat-option *ngFor="let location of filteredlocation | async" [value]="location.address" (onSelectionChange)="select($event, location, 3)">
+                  <span style="width: 100%; display: block;">{{location.address}}</span>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <mat-action-row>
+          <button mat-stroked-button color="primary" (click)="findActivity()">Buscar</button>
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </mat-card-actions>
+  <mat-card-content>
+    <div>
+      <mat-form-field appearance="standard" style="width: 30%;">
+        <mat-label>Busqueda Rapida</mat-label>
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Descripcion o Nombre de pax">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <button mat-raised-button color="primary" style="float: right; margin: 17px 0 17px 0;" (click)="addNew()"><i class="material-icons">add</i>Agregar nuevo</button>
+      <button mat-raised-button color="primary" style="float: right; margin: 17px 10px 17px 0;" (click)="report()"><i class="material-icons">picture_as_pdf</i></button>
+    </div>
+
+    <div class="example-container mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+        <!-- Code Column -->
+        <ng-container matColumnDef="nro">
+          <th mat-header-cell *matHeaderCellDef> <b>Nro.</b> </th>
+          <td mat-cell *matCellDef="let element; let i = index;" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;"> 
+            {{dataSource.filteredData.indexOf(element) + 1}} 
+          </td>
+        </ng-container>
+  
+        <!-- Hour Column -->
+        <ng-container matColumnDef="hour">
+          <th mat-header-cell *matHeaderCellDef> <b>FECHA - HORA</b> </th>
+          <td mat-cell *matCellDef="let element" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;">
+            {{element.scheduledDate * 1000 | date: 'MMM d, y - HH:mm'}}
+          </td>
+        </ng-container>
+      
+        <!-- serviceCode Column -->
+        <ng-container matColumnDef="serviceCode">
+          <th mat-header-cell *matHeaderCellDef> <b>SERVICIO</b> </th>
+          <td mat-cell *matCellDef="let element" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;"> 
+            <ng-container *ngFor="let service of services">
+              <label *ngIf="service.serviceTypeCode == element.serviceServiceTypeCode && service.code == element.serviceCode">
+                {{service.name}} 
+              </label>
+            </ng-container>
+          </td>
+        </ng-container>
+      
+        <!-- remark Column -->
+        <ng-container matColumnDef="remark">
+          <th mat-header-cell *matHeaderCellDef> Descripcion </th>
+          <td mat-cell *matCellDef="let element" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;"> 
+            {{element.remark}} 
+          </td>
+        </ng-container>
+      
+        <!-- passengerName Column -->
+        <ng-container matColumnDef="passengerName">
+          <th mat-header-cell *matHeaderCellDef> <b>NOMBRE PAX</b> </th>
+          <td mat-cell *matCellDef="let element" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;"> 
+            {{element.passengerName}} 
+          </td>
+        </ng-container>
+  
+        <!-- passengersNumber Column -->
+        <ng-container matColumnDef="passengersNumber">
+          <th mat-header-cell *matHeaderCellDef> <b>NRO PAX</b> </th>
+          <td mat-cell *matCellDef="let element" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;"> 
+            {{element.passengersNumber}} 
+          </td>
+        </ng-container>
+  
+        <!-- locationType Column -->
+        <ng-container matColumnDef="locationLocationTypeCode">
+          <th mat-header-cell *matHeaderCellDef> Tipo Ubicacion </th>
+          <td mat-cell *matCellDef="let element" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;">
+            <ng-container *ngFor="let locationType of locationTypes">
+              <label *ngIf="locationType.code == element.locationLocationTypeCode">
+                {{locationType.name}} 
+              </label>
+            </ng-container>
+          </td>
+        </ng-container>
+  
+        <!-- location Column -->
+        <ng-container matColumnDef="locationCode">
+          <th mat-header-cell *matHeaderCellDef> <b>HOTEL</b> </th>
+          <td mat-cell *matCellDef="let element" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;">
+            <ng-container *ngFor="let location of locations">
+              <label *ngIf="location.code == element.locationCode && location.locationTypeCode == element.locationLocationTypeCode">
+                {{location.address}} 
+              </label>
+            </ng-container>
+          </td>
+        </ng-container>
+  
+        <!-- routeProfile Column -->
+        <ng-container matColumnDef="routeProfileCode">
+          <th mat-header-cell *matHeaderCellDef> <b>RUTA</b> </th>
+          <td mat-cell *matCellDef="let element" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;">
+            <ng-container *ngFor="let route of routeProfiles">
+              <label *ngIf="route.code == element.routeProfileCode">
+                {{route.name}} 
+              </label>
+            </ng-container>
+          </td>
+        </ng-container>
+  
+        <!-- customerCode Column -->
+        <ng-container matColumnDef="customerCode">
+          <th mat-header-cell *matHeaderCellDef> <b>AGENCIA</b> </th>
+          <td mat-cell *matCellDef="let element" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;">
+            <ng-container *ngFor="let customer of customers">
+              <label *ngIf="customer.code == element.customerCode">
+                {{customer.name}} 
+              </label>
+            </ng-container>
+          </td>
+        </ng-container>
+  
+        <!-- userAlias Column -->
+        <ng-container matColumnDef="userAlias">
+          <th mat-header-cell *matHeaderCellDef> Movil </th>
+          <td mat-cell *matCellDef="let element" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;"> {{element.userAlias}} </td>
+        </ng-container>
+  
+        <!-- Transfer Column -->
+        <ng-container matColumnDef="transfer">
+          <th mat-header-cell *matHeaderCellDef>
+            <b>TRANSFER</b>
+          </th>
+          <td mat-cell *matCellDef="let element; let row" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;">
+            <div *ngIf="element.hasChildActivity == 1">
+              <i class="material-icons md-18">how_to_reg</i>
+            </div>
+          </td>
+        </ng-container>
+  
+        <!-- activityState Column -->
+        <ng-container matColumnDef="activityState">
+          <th mat-header-cell *matHeaderCellDef>
+            <b>ESTADO</b>
+          </th>
+          <td mat-cell *matCellDef="let element; let row" (click)="element.hasChildActivity == 1 ? findSubActivity(element, false) : null; expandedElement = expandedElement === element ? null : element;">
+            <ng-container *ngFor="let activityState of activityStates">
+              <label *ngIf="activityState.code == element.activityStateCode">
+                {{activityState.name}} 
+              </label>
+            </ng-container>
+          </td>
+        </ng-container>
+  
+        <!-- actionsColumn Column -->
+        <ng-container matColumnDef="actionsColumn">
+          <th mat-header-cell *matHeaderCellDef>
+            <button mat-icon-button color="accent" matTooltip="Nuevo" (click)="addNew()">
+              <i class="material-icons">add</i>
+            </button>
+          </th>
+          <td mat-cell *matCellDef="let element; let row">
+            <button *ngIf="element.activityStateCode < 4" mat-icon-button color="primary" matTooltip="Asignar" (click)="assign(element)">
+              <i class="material-icons md-18">assignment</i>
+            </button>
+            <button *ngIf="element.activityStateCode == 4 || element.activityStateCode == 5" mat-icon-button color="warn" matTooltip="Cancelar" (click)="cancelAssign(element)">
+              <i class="material-icons md-18">cancel</i>
+            </button>
+            <button *ngIf="element.activityStateCode < 4" mat-icon-button color="primary" focusable="false" matTooltip="Modificar" (click)="startEdit(row)">
+              <i class="material-icons md-18">create</i>
+            </button>
+            <button mat-icon-button *ngIf="element.activityStateCode < 4" color="warn" matTooltip="Eliminar" (click)="delete(element)">
+              <i class="material-icons md-18">delete</i>
+            </button>
+          </td>
+        </ng-container>
+  
+        <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+            <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+              <div class="example-element-diagram">
+                <h3>Transporte: <label *ngIf="element.activityStateCode == 5">confirmado</label></h3>
+                <div *ngIf="element.userAlias; else elseBlock">
+                  <div class="example-element-position">
+                    <ng-container *ngFor="let provider of providers">
+                      <label *ngIf="provider.code == element.userProviderCode">
+                        <b>Proveedor:</b> {{provider.name}} 
+                      </label>
+                    </ng-container>
+                  </div>
+                  <div class="example-element-name"> 
+                    <ng-container *ngFor="let user of users">
+                      <label *ngIf="user.alias == element.userAlias">
+                        <b>Conductor:</b> {{user.name}} 
+                      </label>
+                    </ng-container>
+                  </div>
+                  <div class="example-element-weight"> <b>Alias:</b> {{element.userAlias}} </div>
+                </div>
+                <ng-template #elseBlock>
+                  <div class="example-element-name"> Por Asignar </div>
+                </ng-template>
+              </div>
+  
+              <div class="example-element-diagram">
+                <h3>Transfer: <label *ngIf="subActivity.activityStateCode == 5">confirmado</label></h3>
+                <div *ngIf="element.hasChildActivity == 1; else elseBlock1">
+                  <div *ngIf="subActivity.userAlias; else elseBlock2">
+                    <div class="example-element-position">
+                      <ng-container *ngFor="let provider of providers">
+                        <label *ngIf="provider.code == subActivity.userProviderCode">
+                          <b>Proveedor:</b> {{provider.name}} 
+                        </label>
+                      </ng-container>
+                    </div>
+                    <div class="example-element-name"> 
+                      <ng-container *ngFor="let user of users">
+                        <label *ngIf="user.alias == subActivity.userAlias">
+                          <b>Nombre:</b> {{user.name}} 
+                        </label>
+                      </ng-container>
+                    </div>
+                    <div class="example-element-weight"> <b>Alias:</b> {{subActivity.userAlias}} </div>
+                  </div>
+                  <ng-template #elseBlock2>
+                    <div class="example-element-name"> Por Asignar </div>
+                    <button mat-stroked-button color="primary"
+                    (click)="assign(subActivity)">Asignar Transfer</button>
+                  </ng-template>
+                </div>
+                <ng-template #elseBlock1>
+                  <div class="example-element-name"> Sin Transfer </div>
+                  <button mat-stroked-button color="primary" *ngIf="element.activityStateCode < 5"
+                  (click)="addSubActivity(element.passengerName, element.passengersNumber, element.remark, element.activityStateCode, element.code, element.customerCode, 
+                  element.serviceCode, element.serviceServiceTypeCode, element.scheduledDate, element.locationLocationTypeCode, element.locationCode, element.routeProfileCode)">Agregar Transfer</button>
+                </ng-template>
+              </div>
+  
+              <div class="example-element-diagram">
+                <h3>Descripción:</h3>
+                <div class="example-element-name"> {{element.remark}} </div>
+              </div>
+  
+              <div class="example-element-diagram">
+                <h3>Ruta:</h3>
+                <div class="example-element-name">
+                  <ng-container *ngFor="let route of routeProfiles">
+                    <label *ngIf="route.code == element.routeProfileCode">
+                      <b>Nombre:</b> {{route.name}} <br>
+                      <b>Descripcion:</b> {{route.description}} 
+                    </label>
+                  </ng-container>
+                </div>
+              </div>
+  
+              <div class="example-element-diagram">
+                <h3>Razon de cancelación:</h3>
+                <div *ngIf="element.cancellationReasonCode; else elseBlock2">
+                  <ng-container *ngFor="let cancellation of cancellations">
+                    <label *ngIf="cancellation.code == element.cancellationReasonCode">
+                      <b>Por:</b> {{cancellation.name}} <br>
+                    </label>
+                  </ng-container>
+                </div>
+                <ng-template #elseBlock2>
+                  <div class="example-element-name"> Ninguna. </div>
+                </ng-template>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky: true"></tr>
+        <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+            class="example-element-row"
+            [class.example-expanded-row]="expandedElement === element">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+      </table>
+    </div>
+
+    <div class="loading-shade" *ngIf="isLoading">
+      <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
+    </div>
+  </mat-card-content>
+
+  <mat-paginator [length]="recordsFound"  [pageSize]="pageSize" [pageSizeOptions]="[1, 10, 25, 100]" (page)="paginator($event)"></mat-paginator>
+</mat-card>
+
+
+
+

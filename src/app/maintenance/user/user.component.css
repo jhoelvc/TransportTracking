@@ -1,0 +1,104 @@
+table {
+	width: 100%;
+}
+
+.example-card {
+  /*position: absolute;*/
+  height: calc(100% - 136px);
+  box-shadow: 0 2px 1px -1px rgba(0,0,0,0);
+	padding-bottom:56px;
+	top: 0;
+	left: 0;
+	right: 0;
+}
+
+.mat-card-content {
+	max-width: 65%;
+	height: calc(100% - 100px);
+	margin: 0 auto 56px auto;
+}
+
+.example-container {
+  height: calc(100% - 70px);
+	overflow: auto;
+	border-top-style: outset;
+}
+
+.loading-shade {
+  position: absolute;
+  top: 178px;
+  left: 16px;
+  bottom: 56px;
+  right: 16px;
+  /*background: rgba(0, 0, 0, 0.15);*/
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center
+}
+
+.title {
+	width: 100%;
+	text-align: center;
+}
+
+.mat-card {
+  box-shadow: 0 2px 1px -1px rgba(0,0,0,0);
+}
+
+.example-margin {
+  margin: 0 10px;
+}
+
+.mat-card-actions {
+	margin: 0; 
+	padding: 8px 0;
+}
+
+.mat-paginator {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.example-headers-align .mat-expansion-panel-header-title,
+.example-headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.example-headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mat-form-field {
+  margin-right: 12px;
+}
+
+
+.example-container::-webkit-scrollbar {
+  -webkit-appearance: none;
+}
+
+.example-container::-webkit-scrollbar:vertical {
+  width:10px;
+}
+
+.example-container::-webkit-scrollbar-button:increment,.example-container::-webkit-scrollbar-button {
+  display: none;
+} 
+
+.example-container::-webkit-scrollbar:horizontal {
+  height: 10px;
+}
+
+.example-container::-webkit-scrollbar-thumb{
+  background-color: #797979;
+  border-radius: 20px;
+  border: 2px solid #f1f2f3;
+}
+
+.example-container::-webkit-scrollbar-track {
+  border-radius: 10px;  
+}

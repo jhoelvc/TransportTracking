@@ -1,0 +1,27 @@
+<div class="container" [@childAnimation]="isEditing ? 'open' : 'closed'">
+  <form class="mat-dialog-content" #formControl="ngForm" style="overflow: hidden;">
+    <div [style.display]="isEditing ? 'block' : 'none'">
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput placeholder="Nombre de ruta" [(ngModel)]="name" name="name"
+        onkeypress="return String.fromCharCode(event.charCode).match(/[^a-zA-Z\s]/g) === null" required>
+      </mat-form-field>
+    
+      <mat-form-field appearance="fill">
+        <mat-label>Descripcion</mat-label>
+        <textarea matInput placeholder="Descripcion" [(ngModel)]="description" name="description"
+        onkeypress="return String.fromCharCode(event.charCode).match(/[^a-zA-Z\s]/g) === null" required></textarea>
+      </mat-form-field>
+    </div>
+
+    <div mat-dialog-actions [style.display]="isEditing ? 'block' : 'none'">
+      <button mat-icon-button color="warn" (click)="close()">
+        <i class="material-icons">close</i>
+      </button>
+    
+      <button mat-icon-button color="primary" [disabled]="!formControl.valid || locations.length == 0" (click)="addRoute()">
+        <i class="material-icons">check</i>
+      </button>
+    </div>
+  </form>
+</div>

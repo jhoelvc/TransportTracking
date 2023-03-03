@@ -1,0 +1,76 @@
+<div class="container">
+  <div *ngIf="data.providerCode != 0; else elseBlock">
+    <h3 mat-dialog-title>Editar usuario</h3>
+  </div>
+  <ng-template #elseBlock>
+    <h3 mat-dialog-title>Agregar nuevo usuario</h3>
+  </ng-template>
+  
+    <form class="mat-dialog-content" #formControl="ngForm">   
+      <div class="form">
+        <mat-form-field appearance="outline" color="primary" style="margin-right: 5px;">
+          <mat-label>Proveedor</mat-label>
+          <mat-select placeholder="Proveedor" [(ngModel)]="provider.code" name="providerCode" [disabled]="data.providerCode != 0" required>
+            <mat-option style="font-size: 13px;" *ngFor="let provider of providers" [value]="provider.code">
+              {{provider.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" color="primary">
+          <mat-label>Rol de usuario</mat-label>
+          <mat-select placeholder="Rol de usuario" [(ngModel)]="userRole.code" name="userRoleCode" [disabled]="data.providerCode != 0" required>
+            <mat-option style="font-size: 13px;" *ngFor="let role of roles" [value]="role.code">
+              {{role.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="form">
+        <mat-radio-group aria-label="Select an option" name="position" [(ngModel)]="position" *ngIf="userRole.code == 4">
+          <mat-radio-button value="TRP">Transportista</mat-radio-button>
+          <mat-radio-button value="TRF">Trasladista</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <div class="form">
+        <mat-form-field appearance="outline" color="primary" style="margin-right: 5px;">
+          <mat-label>Alias</mat-label>
+          <input matInput #input placeholder="Alias" [(ngModel)]="data.alias" name="alias" [disabled]="data.providerCode != 0" required >
+          <span *ngIf="userRole.code == 4" matSuffix>{{position}}</span>
+          <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" color="primary">
+          <mat-label>Telefono</mat-label>
+          <input matInput #input placeholder="Telefono" [(ngModel)]="data.contactPhoneNumber" name="contactPhoneNumber" required >
+          <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form">
+        <mat-form-field appearance="outline" color="primary">
+          <mat-label>Nombre</mat-label>
+          <input matInput #input placeholder="Nombre" [(ngModel)]="data.name" name="name" required>
+          <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form" *ngIf="data.providerCode == 0">
+        <mat-form-field appearance="outline" color="primary">
+          <mat-label>Contraseña</mat-label>
+          <input matInput #input placeholder="Contraseña" [(ngModel)]="data.password" name="password" [type]="hide ? 'password' : 'text'" required>
+          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+          <mat-error *ngIf="formControl.invalid">{{getErrorMessage()}}</mat-error>
+        </mat-form-field>
+      </div>
+  
+      <div mat-dialog-actions>
+        <button mat-raised-button color="primary" [disabled]="!formControl.valid" (click)="confirmAdd()">Guardar</button>
+        <button mat-raised-button (click)="onNoClick()">Cancelar</button>
+      </div>
+    </form>
+  </div>
